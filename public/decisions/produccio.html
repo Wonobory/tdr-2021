@@ -1,0 +1,35 @@
+
+
+<div style="display: flex;justify-content: center;">
+    <div style="width: 80%">
+        <h2>Producció</h2>
+        <p>En aquest apartat has de triar tot el relacionat amb la producció del teu producte. En cas de que no aconsegueixis vendre tota la teva producció, es guardarà per l'any següent.</p>
+        <div style="padding:20px;border:1px solid black;margin-top: 10px;display:flex;flex-direction: column;">
+            <div style="margin-left:10px">
+                <input class="form-check-input" onclick="carregarExternalitzarProduccio(document.getElementById('carregar'))" type="radio" name="flexRadioDefault" id="externalitzar-produccio">
+                <label class="form-check-label" for="flexRadioDefault1">
+                    Externalitzar producció
+                </label>
+            </div>
+            
+            <div style="margin-left:10px">
+                <input class="form-check-input" onclick="carregarProduccioInterna(document.getElementById('carregar'))" type="radio" name="flexRadioDefault" id="produccio-interna">
+                <label class="form-check-label" for="flexRadioDefault1">
+                    Producció pròpia
+                </label>
+            </div>       
+        </div>
+
+        <h3>Fabricació</h3>
+
+        <div id="carregar">
+
+        </div>
+
+        <button style="width: 100px;margin-top: 20px;" id="enviar" onclick="guardarDecisions('produccio', partida, usuari)">Guardar</button>
+
+        <div id="output" style="padding:20px;margin-top: 10px;">
+            
+        </div>
+    </div>
+</div>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    
+    <link rel="stylesheet" href="/css/menuStyle.css">
+
+    <link rel="icon" type="image/ico" href="/favicon.ico"/>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/js/autoNumeric.js" type="text/javascript"></script>
+    <script src="/js/functions.js"></script>
+</head>
+<body>
+
+        <div class='notificacions'>
+            <div class='notificacio2'>
+
+            </div>
+        </div>
+
+        <!-- MENU -->
+        <div class="contenidor-menu">
+            <div class="logo"><img src="/png/logo2.png"></div>
+            <nav>
+            <ul>
+                <li><div><span>Introducció</span></div></li>
+                <li><div><span onclick="alternar()">Decisions</span>
+                    <ul id="decisions">
+                        <div id='selector'></div>
+                        <li onclick="carregarArxiu('produccio')"><div><span>- Producció</span></div></li>
+                        <li onclick="carregarArxiu('recursos-humans')"><div><span>- RR.HH</span></div></li>
+                        <li onclick="carregarArxiu('venta')"><div><span>- Venta</span></div></li>
+                        <li onclick="carregarArxiu('marketing')"><div><span>- Màrketing</span></div></li>
+                        <li onclick="carregarArxiu('financiacio')"><div><span>- Financiació</span></div></li>
+                    </ul>
+                </div>
+                </li>
+                <li><div><span>Resultats</span></div></li>
+            </ul>
+            </nav>
+        
+        </div>
+
+
+        <div class="part-dreta">
+            <div class="resultats">
+                <div>
+                    <label>Posició:</label>
+                    <span>1º</span>
+                </div>
+                
+                <div>
+                    <label>Diners disponibles:</label>
+                    <span id='diners-disponibles'>Carregant..</span>
+                </div>
+
+                <div>
+                    <label>Costos previstos:</label>
+                    <span>32.024.023€</span>
+                </div>
+
+                <div>
+                    <label>Produccio prevista:</label>
+                    <span>80.000.000 u</span>
+                </div>              
+            </div>
+
+            <div class="centrador">
+                <div class="result" id="result">
+                    
+                </div>
+            </div>
+        </div>
+</body>
+
+<!--
+
+                                                                                    
+                                                                                
+                          (##(((((((((((((((##%                                 
+                      ##((////////////////////(((###                            
+                   #((////&%%%&&&&@////////&&&&%&&&&(#/                         
+    /(&  #,,*#   #(/////****///////////////////////((((#&                       
+   /,,/%*,/(%# #(///*****///(((((((((////////((((#(((((((#                      
+   *,*/%**(@,,,,,*(/***//(((%@@@@///(((////////%@@@@@#//((#                     
+   ///##,*%,#@@@##&@&@&@@@@&&&&&&&@@@@@@#@&&@@&&&&&&&&@@@@@@@                   
+    /**(%@@%#(/**,*&*@@@@&&&&&&&&&&&&@@@(@@@&&&&&&&&&&&@@@((%                   
+   (***(%@&*,,,*,*(***@@@&&&&&&&&&&&&&@@/@@&&&&&&&&&&&%@&&/(#                   
+   /***(&/((*,*/%*****/@@@&&&&&&&&&&&&@(//@@&&&&&&&&&%&@///(#                   
+  #((/(&#(&.#(//**///////@@@@@@@@@&&@%*/////@@@@@@&&@@/////(%                   
+    (/(%%   #((/////((///////////*****///////((((((#&&##///#&                   
+            %#((///////(%*#/**/*.,****/(***(,*/#/#(%//////(%         #*,*       
+             ##((///////**/#**@#((&%(#%@/(/%**/(*#//((((((#          (*,*       
+              ##((////////////%,.,*,.,*,,,*(.*/(/(#((((((%          &(*(*       
+               %#((////////((//////((((##((///((%((((((#%           %##@%%%%,   
+                 %#(((////////(#(//////////((%((((((##(           @&#/@#*,,,,,*,
+                    %#((((////////(((((((((((((((##%              ,/((######%&  
+                       &##(((((((((((((((((####%                  %&%###/*,,,,,/
+                              (%%%%%%%%&(                            &#/**//(,  
+                                                                      %/,,,,,(
+
+-->
+
+<script>
+    function alternar() {
+        if (decisions.style.display == "none") {
+            $("#decisions").slideDown(200)
+            $("#selector")[0].style.display = "block"
+        } else {
+            $("#decisions").slideUp(200)
+            $("#selector")[0].style.display = "none"
+            //decisions.style.display = "none"
+        }
+    }
+
+    if (verificar(localStorage.auth) == false) {
+        location.href = "/auth/login"
+    } else {
+        usuari = JSON.parse(localStorage.auth).user
+        carregarDiners(partida, usuari)
+    }
+
+    carregarArxiu("produccio")
+
+    function carregarArxiu(arxiu) {
+        if (arxiu == "recursos-humans") {
+            $.ajax({
+                type: "GET",
+                async: false,
+                url: `http://localhost:4854/decisions/recursos-humans.html`,
+                
+                success: function (res) {
+                    document.getElementById("result").innerHTML = res
+                    actualitzarSlidersRRHH()
+                    carregarDecisions("RRHH", partida, usuari)
+                    moveSelector("38px", "51px")
+                }   
+            });
+        } else if (arxiu == "produccio") {
+            $.ajax({
+                type: "GET",
+                async: false,
+                url: `http://localhost:4854/decisions/produccio.html`,
+                
+                success: function (res) {
+                    document.getElementById("result").innerHTML = res
+                    carregarProduccio(partida, usuari, document.getElementById('externalitzar-produccio'), document.getElementById('produccio-interna'))
+                    carregarDecisions("produccio", partida, usuari)
+                    //carregarProduccioInterna(document.getElementById("carregar"))
+                    //cargarDecisions(usuari, partida, [document.getElementById('input-sou'), document.getElementById('input-treballadors'), document.getElementById('input-produccio')])
+                    moveSelector("13px", "77px")
+                }   
+            });
+        } else if (arxiu == "venta") {
+            $.ajax({
+                type: "GET",
+                async: false,
+                url: `http://localhost:4854/decisions/venta.html`,
+                
+                success: function (res) {
+                    document.getElementById("result").innerHTML = res
+                    //cargarDecisions(usuari, partida, [document.getElementById('input-sou'), document.getElementById('input-treballadors'), document.getElementById('input-produccio')])
+                    //actualitzarSlidersVenta()
+                    carregarDecisions('venta', partida, usuari)
+                    moveSelector("63px", "44px")                    
+                }   
+            });
+        } else if (arxiu == "marketing") {
+            $.ajax({
+                type: "GET",
+                async: false,
+                url: `http://localhost:4854/decisions/marketing.html`,
+                
+                success: function (res) {
+                    document.getElementById("result").innerHTML = res
+                    //cargarDecisions(usuari, partida, [document.getElementById('input-sou'), document.getElementById('input-treballadors'), document.getElementById('input-produccio')])
+                    carregarMarketing(document.getElementById('marketing-table'))
+                    calcularCostMarketing(document.getElementById('cost-total'))
+                    moveSelector("88px", "76px")                
+                }   
+            });
+        } else if (arxiu == "financiacio") {
+            $.ajax({
+                type: "GET",
+                async: false,
+                url: `http://localhost:4854/decisions/financiacio.html`,
+                
+                success: function (res) {
+                    document.getElementById("result").innerHTML = res
+                    //cargarDecisions(usuari, partida, [document.getElementById('input-sou'), document.getElementById('input-treballadors'), document.getElementById('input-produccio')])
+                    moveSelector("113px", "85px")
+                    carregarDecisions("financiacio", partida, usuari)
+                    revisarInput()
+                }   
+            });
+        }
+    }
+</script>
+</html>

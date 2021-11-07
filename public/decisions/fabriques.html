@@ -1,0 +1,65 @@
+<h3>Adquirir fàbrica</h3>
+
+<p>Selecciona la fàbrica que vulguis comprar, recorda que anualment es cobrarà entre un 2% i un 3% del preu total com a costos de manteniment. Recorda que es necessita aconseguir omplir com a mínim el 70% de la plantilla màxima de treballadors, d'altre manera no s'assoliría la seva màxima producció</p>
+
+<div style="display: flex; flex-direction: row; align-items:center;">
+    <h4>Nom de la fàbrica:</h4>
+    <input id="nom-fabrica" type="text">
+</div>
+
+<div style="margin-top: 15px;">
+    <div class="tipus-fabrica" style="border: 1px solid black; padding: 10px; display: inline-block;">
+        <div style="display: flex;flex-direction: column;">
+            <div>
+                <input class="form-check-input" type="radio" name="selectorFabrica" id="tier1" value="1" checked>
+            </div>
+            <div style="margin-top: 10px;">
+                <img src="/svg/fabrica-tier1.svg" style="height: 100px;">
+            </div>
+            <span>Fàbrica petita</span>
+            <span>Max: 50 treballadors</span>
+            <span>Producció: 170u/h * treballadors</span>
+        
+            <span style="margin-top: 10px;">250.000€</span>
+        </div>
+    </div>
+
+    <div class="tipus-fabrica" style="border: 1px solid black; padding: 10px; display: inline-block;">
+        <div style="display: flex;flex-direction: column;">
+            <div>
+                <input class="form-check-input" type="radio" name="selectorFabrica" id="tier2" value="2">
+            </div>
+            <div style="margin-top: 10px;">
+                <img src="/svg/fabrica-tier2.svg" style="height: 100px;">
+            </div>
+            <span>Fàbrica mitjana</span>
+            <span>Max: 80 treballadors</span>
+            <span>Producció: 210u/h * treballadors</span>
+
+        
+            <span style="margin-top: 10px;">500.000€</span>
+        </div>
+    </div>
+
+    <div class="tipus-fabrica" style="border: 1px solid black; padding: 10px; display: inline-block;">
+        <div style="display: flex;flex-direction: column;">
+            <div>
+                <input class="form-check-input" type="radio" name="selectorFabrica" id="tier3" value="3">
+            </div>
+            <div style="margin-top: 10px;">
+                <img src="/svg/fabrica-tier3.svg" style="height: 102px;">
+            </div>
+            <span>Fàbrica gran</span>
+            <span>Max: 120 treballadors</span>
+            <span>Producció: 250u/h * treballadors</span>
+        
+            <span style="margin-top: 10px;">750.000€</span>
+        </div>
+    </div>
+</div>
+<div style="display: flex;flex-direction: row;margin-top: 10px;">
+    <div>
+        <button onclick="guardarDecisions('cancelar-comprar-fabrica', partida, usuari)" style="float: right;">Cancelar</button>
+        <button onclick="guardarDecisions('comprar-fabrica', partida, usuari)" style="float: right;">Comprar</button>
+    </div>    
+</div>

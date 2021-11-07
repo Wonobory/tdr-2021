@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+.particle {
+  position:absolute;
+  transform:translate(-50%, -50%);
+  width:10px;
+  height:10px;
+  cursor: pointer;
+}
+
+.currentParticle {
+  display:block;
+  width:2px;
+  height:20px;
+  border-radius:4px;
+  background:rgb(167, 232, 189);
+  box-shadow:0 0 4px rgba(255,255,255,0.5);
+  position:absolute;
+  left:50%;
+  bottom:50%;
+  transform-origin:center bottom;
+  transition:transform 0.2s, opacity 0.45s;
+  transition-timing-function:ease-out;
+  cursor: pointer;
+}
+
+body {
+  font-family: inter;
+}
+
+.button {
+  background-color: #f0efeb;
+  padding: 20px;
+  border-radius: 20px;
+  font-weight: 600;
+  max-width: 100px;
+  transition: ease-in 0.1s all;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}

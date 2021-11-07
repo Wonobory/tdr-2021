@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/testStyle.css">
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>    
+</head>
+<body>
+    <div class='button' onclick="this.style.background = '#a7e8bd'; this.innerHTML = 'Guardat!'">
+        Guardar
+    </div>
+</body>
+
+<script>
+var winPos;
+window.scrollTo(15,15);
+var flag = false;
+document.querySelector(".button").addEventListener("click", function (e) {
+
+  var div = document.createElement("div");
+  div.className = "particle"
+
+  document.querySelector("body").appendChild(div);
+  div.style.left = e.pageX + "px";
+  div.style.top = e.pageY + "px";
+  var maxElems = 10;
+  for (i = 0; i < maxElems; i++) {
+    var span = document.createElement("span");
+    span.className = "currentParticle"
+    var newSpan = div.appendChild(span);
+    var deg = i * (360 / maxElems) + Math.floor(Math.random() * 15);
+    var height = 10 + Math.floor(Math.random()*15);
+    var width = 2 + Math.floor(Math.random()*5);
+    newSpan.style.height = height + "px";
+    newSpan.style.width = width + "px";
+    newSpan.style.transform = "rotate(" + deg + "deg)";
+  }
+  window.requestAnimationFrame(
+    function () {
+      Array.from(div.querySelectorAll("span")).forEach((el) => {
+        var trasY = -30 - Math.floor(Math.random()*50) ;
+        el.style.transform += "scaleY(0.5) translateY(" + trasY + "px)";
+        el.style.opacity = "0";
+      });
+      window.setTimeout(function(){
+        document.body.removeChild(div);
+      }, 400)
+    }
+    
+  );
+  if (!flag) {
+    flag=true;
+    winPos = [document.body.scrollLeft, document.body.scrollTop];
+  var maxShakeOffset = 1;
+  var shake = window.setInterval(function(){
+    var shakeOffset = Math.floor(Math.random()*10*maxShakeOffset);
+    window.scrollTo(winPos[0]- maxShakeOffset/2 + shakeOffset, winPos[1]- maxShakeOffset/2 + shakeOffset)
+  }, 10);
+  window.setTimeout(function(){
+    window.clearInterval(shake);
+    window.scrollTo(winPos[0], winPos[1]);
+    flag = false;
+  }, 200);
+  }
+  
+    
+});
+</script>
+</html>

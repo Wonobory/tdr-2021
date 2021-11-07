@@ -1,0 +1,24 @@
+<div style="display: flex;justify-content: center;">
+    <div style="width: 80%">
+        <h2>Màrketing</h2>
+
+        <p>En aquesta secció has de triar el tipus i la quantitat de publicitat que li vols fer al teu producte; Has de tenir en compte de que per aconseguir el millor posicionament has de ser la empresa que hagi fet més publicitat en tots els tipus que hi han.</p>
+
+        <div class="centrador-table">
+            <table class="marketing-table" id="marketing-table">
+            </table>
+
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <h4>Cost total</h4>
+                <span id="cost-total"></span>
+                <button style="width: 70px; margin-top: 10px;" onclick="calcularCostMarketing(document.getElementById('cost-total'))">Calcular</button>
+            </div>
+        </div>
+
+        <button style="width: 100px;margin-top: 20px;" id="enviar" onclick="guardarDecisions('marketing', partida, usuari)">Guardar</button>
+
+        <div id="output" style="padding:20px;margin-top: 10px;">
+            
+        </div>
+    </div>
+</div>

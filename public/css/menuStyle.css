@@ -1,0 +1,433 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&family=Lato:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@700&family=Lato:wght@700&display=swap');
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+:focus {
+    outline: none;
+}
+
+.loader {
+    border: 12px solid #f3f3f3;
+    border-top-color: rgb(243, 243, 243);
+    border-top-style: solid;
+    border-top-width: 12px;
+    border-radius: 50%;
+    border-top: 12px solid #6d7e8a;
+    width: 60px;
+    height: 60px;
+    -webkit-animation: spin 2s cubic-bezier(.18,.89,.32,1.28) infinite;
+    animation: spin 2s cubic-bezier(.18,.89,.32,1.28) infinite;
+}
+
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+  
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.divisor-empreses {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+.divisor-divisor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.divisor-button {
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+}
+
+td {
+    padding: 5px;
+}
+
+.divisor-button div h4 {
+    margin-block-end: 5px;
+    margin-block-start: 5px;
+    font-size: 15px;
+}
+
+.divisor-button div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.divisor-button div div {
+    flex-direction: column;
+}
+
+.divisor-empreses div {
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+/*td input {
+    max-width: 100px;
+}*/
+
+h3 {
+    font-family: inter;
+    font-weight: 700;
+    margin-top: 30px;
+}
+
+td, tr {
+    border: 1px solid black;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    width: 100%;
+
+    margin: 0px;
+    padding: 0px;
+}
+
+.logo img {
+    width: 95%}
+
+p {
+    text-align: justify;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    height: auto;
+    display: flex;
+    flex-direction: row;
+
+    font-family: inter;
+}
+
+.contenidor-menu {
+    width: 150px;
+    height: 100%;
+    max-width: 150px;
+    min-width: 150px;
+}
+
+ul {
+    padding-left: 0px;
+
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+}
+
+nav, ul, li, li div, li div span {
+    width: 100%;
+}
+
+.centrador {
+    width: 100%;
+    height: auto;
+    display: flex;  
+
+    justify-content: center;
+}
+
+li {
+    list-style-type: none;
+    width: 100%;
+}
+
+ul li {
+    border: 1px solid black;
+}
+
+ul#decisions li {
+    border: none;
+    list-style: none;
+}
+
+
+
+li div {
+    margin: 5px;
+    width: 100%;
+}
+
+ul li ul li div {
+    margin-left: 10px;
+    border: none;
+}
+
+nav {
+    width: 100%;
+    margin: 0px;
+    margin-top: 5px;
+    padding: 0px;
+}
+
+li div {
+    cursor: pointer;
+}
+
+.part-dreta {
+    display: flex;
+    flex-direction: column;
+
+    width: -webkit-fill-available;
+    height: auto;
+    margin-top: 0px;
+    height: min-content;
+}
+
+.result {
+    width: 90%;
+    height: auto;
+
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin: 30px;
+    margin-top: 0px;
+
+    border: 1px solid black;
+    height: min-content;
+}
+
+.resultats {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+
+    margin-bottom: 30px;
+}
+
+.resultats div {
+    padding: 20px;
+    min-width: 10%;
+
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+}
+
+.resultats div span {
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.resultats div label {
+    font-size: 13px;
+}
+
+input#nom-fabrica {
+    height: 25px;
+    margin-left: 15px;
+}
+
+.fabrica-en-propietat {
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin-left: 0px;
+    margin-right: 20px;
+}
+
+.fabrica-en-propietat img {
+    height: 100px;
+}
+
+.fabrica-en-propietat span {
+    font-size: 13px;
+}
+
+.fabrica-en-propietat input {
+    width: 70px;
+}
+
+.calcular-produccio-total {
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.slider {
+    width: 60%;
+}
+
+.contador {
+    margin-top: 10px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+}
+
+.contador button {
+    margin-top: 10px;
+    width: 80px;
+}
+
+#selector {
+    position: absolute;
+    top: 13px;
+    width: 77px;
+    position: absolute;
+    left: 16px;
+    background-color: black;
+    height: 2px;
+    transition: all 0.3s ease 0s;
+    z-index: -99;
+}
+
+#decisions {
+    position: relative;
+}
+
+.slider-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#minoristes, #majoristes {
+    font-weight: 500;
+}
+
+#slider-minoristes-majoristes {
+    width: 60%;
+}
+
+.slider-container div {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    align-items: center;
+}
+
+.slider-container div span {
+    font-weight: 700;
+}
+
+.money-center {
+    display: flex;
+}
+
+.money-input {
+    border: 1px solid black;
+    height: 28px;
+    border-right: none;
+    padding: 7px;
+    padding-right: 1px;
+    width: 125px;
+}
+
+.money-value {
+    border: 1px solid black;
+    height: 20px;
+    padding: 3px;
+}
+
+.insercions-input {
+    border: 1px solid black;
+    height: 28px;
+    padding: 7px;
+    padding-right: 1px;
+    width: 70%;
+    max-width: none;
+}
+
+.marketing-table {
+    width: 50%;
+}
+
+.marketing-table tr td div {
+    display: flex;
+    justify-content: center;
+}
+
+#output {
+    border: 1px solid black;
+    display: none;
+    height: 0px;
+    opacity: 0;
+    transition: all 0.3s ease 0s;
+}
+
+.decisions2 {
+    position: relative;
+}
+
+.centrador-table {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#financiacio-input {
+    width: 30%;
+    font-weight: 700;
+    height: 80px;
+    font-size: 35px;
+}
+
+#financiacio-div {
+    justify-content: center;
+    font-weight: 600;
+}
+
+.termini-centrar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 20px;
+}
+
+.termini-centrar h4 {
+    margin-block-start: 0px;
+    margin-block-end: 1em;
+}
+
+.notificacions {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* z-index: -999; */
+}
+
+.notificacio2 {
+    /* background-color: black; */
+    width: 20%;
+    height: 100%;
+    float: right;
+    /* z-index: 99;*/
+    display: flex;
+    flex-direction: column;
+}

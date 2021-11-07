@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/loginStyle.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/js/functions.js"></script>
+    <title>Login</title>
+</head>
+<body>
+    <div class="centrador">
+        <div class="ordenar2">
+            <div class="ordenar">
+                <div class="noms">
+                    <div class="contenidor">
+                        <span>Usuari:</span>
+                    </div>
+                    <div class="contenidor">
+                        <span>Contrasenya:</span>
+                    </div>
+                </div>
+                <div class="inputs">
+                    <div class="contenidor">
+                        <input type="text" id='user'>
+                    </div>
+                    <div class="contenidor">
+                        <input type="password" id='pass'>
+                    </div>
+                </div>
+                <button onclick="enviar()">Login</button>
+            </div>
+
+            <div class="contenidor-resultats" id="contenidor-resultats">
+                <span id="resultat"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const resultat = document.getElementById("resultat")
+
+        if (verificar(localStorage.auth) == false) {
+            localStorage.removeItem("auth")
+        } else {
+            location.href = "/partides"
+        }
+
+        if (resultat.innerHTML == "") {
+            document.getElementById("contenidor-resultats").style.border = "none"
+        } else {
+            document.getElementById("contenidor-resultats").style.border = "1px solid black"
+        }
+
+        async function enviar() {
+            let dades = {
+                user: document.getElementById("user").value,
+                pass: document.getElementById("pass").value
+            }
+
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: `http://localhost:4854/auth/login`,
+                data: dades,
+                
+                success: function (res) {
+                    if (res) {
+                        resultat.innerHTML = "Usuari i contrasenya correcte!";
+                        document.getElementById("contenidor-resultats").style.border = "1px solid black"
+                        localStorage.auth = JSON.stringify(dades)
+                        location.href = `/partides`
+                    } else {
+                        resultat.innerHTML = "Usuari o contrasenya incorrecte!";
+                        document.getElementById("contenidor-resultats").style.border = "1px solid black"
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<div style="display: flex;justify-content: center;">
+    <div style="width: 80%">
+        <h2>Venta</h2>
+
+        <p>En aquesta secció has de triar tot el relacionat amb les ventes i el preu del producte. Fent ús del "slidebar" que disposes sota d'aquest text, decidiràs quin percentatge dels teus productes decidiràs vendre a través de majoristes o minoristes.</p>
+
+        <div class="slider-container">
+            <div>
+                <span>Minoristes</span>
+                <span id="minoristes">0%</span>
+            </div>
+            
+            <input id="slider-minoristes-majoristes" type="range" min="0" value="50" max="100">
+
+            <div>
+                <span>Majoristes</span>
+                <span id="majoristes">100%</span>
+            </div>
+        </div>
+
+        <h3>Minoristes</h4>
+        
+        <p>Has de tenir en compte que se't cobrarà un extra de 0.20€ com a cost d'enviament. El posicionament de cara als minoristes es veuà afectat amb la quantitat d'anuncis que compris.</p>
+
+        <div class="money-center">
+            <input id ="minoristes-input" class="money-input" type="number" placeholder="ex. 1.00 €" step="0.1">
+            <span class="money-value">€</span>
+        </div>
+        
+
+        <h3>Majoristes</h4>
+
+        <p>Alhora de triar els preus de cara als majoristes, s'han de pendre en compte 3 variables; El marge serà la part del P.V.P que es quedaràn els majoritaris per el servei de vendre't el producte; Per altre banda hi ha el lineal, el qual és un pagament anual per que posicionin el teu producte en un millor lloc, i per últim hi ha el P.V.P, el qual tindran en compte els consumidors alhora de comprar el teu producte o el de la competència. El posicionament del teu producte de cara als majoristes, es veurà afectat depenent del preu, marge i linial.</p>
+
+        <table>
+            <tr>
+                <th>Lloc</th>
+                <th>Marge</th>
+                <th>Lineal</th>
+                <th>P.V.P</th>
+            </tr>
+            <tr>
+                <td>Grans superfícies</td>
+                <td><div class="money-center"><input step="0.01" class="money-input" name="2-0" type="number" placeholder="ex. 0.10 €"><span class="money-value">€</span></div></td>
+                <td><div class="money-center"><input class="money-input" name="2-1" type="number" placeholder="ex. 200.000 €"><span class="money-value">€</span></div></td>
+                <td><div class="money-center"><input step="0.01" class="money-input" name="2-2" type="number" placeholder="ex. 1.00 €"><span class="money-value">€</span></div></td>
+            </tr>
+            <tr>
+                <td>Supermercats</td>
+                <td><div class="money-center"><input step="0.01" class="money-input" name="1-0" type="number" placeholder="ex. 0.10 €"><span class="money-value">€</span></div></td>
+                <td><div class="money-center"><input class="money-input" name="1-1" type="number" placeholder="ex. 200.000 €"><span class="money-value">€</span></div></td>
+                <td><div class="money-center"><input step="0.01" class="money-input" name="1-2" type="number" placeholder="ex. 1.00 €"><span class="money-value">€</span></div></td>
+            </tr>
+            <tr>
+                <td>Gasolineres</td>
+                <td><div class="money-center"><input step="0.01" class="money-input" name="0-0" type="number" placeholder="ex. 0.10 €"><span class="money-value">€</span></div></td>
+                <td><div class="money-center"><input class="money-input" name="0-1" type="number" placeholder="ex. 200.000 €"><span class="money-value">€</span></div></td>
+                <td><div class="money-center"><input step="0.01" class="money-input" name="0-2" type="number" placeholder="ex. 1.00 €"><span class="money-value">€</span></div></td>
+            </tr>
+        </table>
+
+        <button style="width: 100px;margin-top: 20px;" id="enviar" onclick="guardarDecisions('venta', partida, usuari)">Guardar</button>
+
+        <div id="output" style="padding:20px;margin-top: 10px;">
+            
+        </div>
+    </div>
+</div>

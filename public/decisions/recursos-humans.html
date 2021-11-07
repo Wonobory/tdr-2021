@@ -1,0 +1,36 @@
+<div style="display: flex;justify-content: center;">
+    <div style="width: 80%">
+        <h2>RR.HH</h2>
+
+        <p>En aquesta secció has de triar el salari i les hores lliures que vulguis oferir als teus treballadors (En cas de que externalitzis la teva producció, ignora aquest apartat). Recorda que la producció dels teus treballadors es veurà afectada positiva o negativament depenent de si està per sobre o per sota de la mitjana.</p>
+        <div style="padding:20px;border:1px solid black;margin-top: 10px;display: flex;flex-direction: column;">
+            <span>Salaris treballadors (€/any)</span>
+            <div style="display: flex; flex-direction: row; margin-top: 5px;">
+                <input type="range" min="17000" max="27000" class="slider" value="17000" id="slider-sou">
+                <div style="width: 40%;">
+                    <span id='contador-sou' style="float: right;">17000 €/any</span>
+                </div>                
+            </div>            
+        </div>
+        <div style="padding:20px;border:1px solid black;margin-top: 10px;display: flex;flex-direction: column;">
+            <span>Hores lliures (h/dia)</span>
+            <div style="display: flex; flex-direction: row; margin-top: 5px;">
+                <input type="range" min="0" max="2" step="0.5" class="slider" value="0" id="slider-hores-lliures">
+                <div style="width: 40%;">
+                    <span id='contador-hores-lliures' style="float: right;">0.0 h/dia</span>
+                </div>                
+            </div>            
+        </div>
+
+        <div class="contador">
+            <span id='nombre-treballadors'></span>
+            <button onclick='contarTreballadors(partida, usuari)'>Calcular</button>
+        </div>
+
+        <button style="width: 100px;margin-top: 20px;" id="enviar" onclick="guardarDecisions('RRHH', partida, usuari)">Guardar</button>
+
+        <div id="output" style="padding:20px;margin-top: 10px;">
+            
+        </div>
+    </div>
+</div>

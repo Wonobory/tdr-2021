@@ -1,0 +1,24 @@
+{
+  "name": "tdr-2021",
+  "version": "1.0.0",
+  "description": "TDR",
+  "main": "server/api.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Oriol Fornaguera",
+  "license": "ISC",
+  "dependencies": {
+    "autonumeric": "^4.6.0",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
+    "mysql": "^2.18.1",
+    "random-int": "^3.0.0",
+    "util": "^0.12.4"
+  }
+}
