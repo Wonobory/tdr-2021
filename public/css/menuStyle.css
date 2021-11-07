@@ -10,6 +10,15 @@
     outline: none;
 }
 
+/* MENU BOLD */
+nav ul li div span {
+    font-weight: 600;
+}
+
+nav ul li div ul li div span {
+    font-weight: 500;
+}
+
 .loader {
     border: 12px solid #f3f3f3;
     border-top-color: rgb(243, 243, 243);
@@ -125,6 +134,7 @@ body {
     height: auto;
     display: flex;
     flex-direction: row;
+    justify-content: center;
 
     font-family: inter;
 }
@@ -197,6 +207,8 @@ li div {
     flex-direction: column;
 
     width: -webkit-fill-available;
+    max-width: 1200px;
+
     height: auto;
     margin-top: 0px;
     height: min-content;

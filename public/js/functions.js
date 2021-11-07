@@ -894,6 +894,8 @@ function notyf(tipus, text) {
     element.style.marginBottom = "10px"
     element.style.color = "white"
     element.style.fontWeight = "600"
+    element.style.borderRadius = "3px" 
+    element.style.marginTop = "3px"
 
     if (tipus == "alert") {        
         element.style.backgroundColor = "#E94F37"
