@@ -32,10 +32,10 @@ const { promisify } = require('util')
 
 const pool = mysql.createPool({
 
-    host: "127.0.0.1",
-    user: "root",
-    password: "",
-    database: "tdr-2021"
+    host: "mysql5045.site4now.net",
+    user: "a7c3e0_rekka",
+    password: "guillem78523",
+    database: "db_a7c3e0_rekka"
     
 })
 
@@ -92,18 +92,30 @@ app.get('/', function(req, res) {
 })
 
 app.get('/:partida/adminpanel', function(req, res) {
-    res.sendFile('/xampp/htdocs/tdr-2021/client/adminpanel.html')
+    const { partida } = req.params;
+
+    fs.readFile('/xampp/htdocs/tdr-2021/client/adminpanel.html', async (err, data) => {
+        if (err) {
+            console.log(err)
+        } else {
+            any = await getPartidaAny(partida)
+            res.send("<script>var partida = '" + partida + "'; var any = '" + any + "'</script>" + data)
+        }
+    })
 })
 
 app.get('/decisions/p/:partida', function(req, res) {
     const { partida } = req.params;
-    
     fs.readFile('/xampp/htdocs/tdr-2021/client/menu.html', async (err, data) => {
         if (err) {
-
+            console.log(err)
         } else {
             any = await getPartidaAny(partida)
-            res.send("<script>var partida = '" + partida + "'; var any = '" + any + "'</script>" + data)
+            if (any != 0) {
+                res.send("<script>var partida = '" + partida + "'; var any = '" + any + "'</script>" + data)
+            } else {
+                res.send("<link rel='stylesheet' href='/css/menuStyle.css'><div class='encara-no'>Estàs dins la partida, però actualment encara no ha començat</div>")
+            }
         }
     })
     //res.sendFile('/xampp/htdocs/tdr-2021/client/index.html');
@@ -114,7 +126,7 @@ app.post('/decisions/get-diners', async function (req, res) {
         res.send("Falten arguments!")
     } else {
         try {
-            res.send(await getDiners(req.body.partida, req.body.usuari))
+            res.send((await getDiners(req.body.partida, req.body.usuari)).toString())
         } catch (err) {
             console.log("/decisions/get-diners [!] ERROR: " + err)
 
@@ -362,7 +374,6 @@ app.post("/partides", async (req, res) => {
     const user = req.body.user
     
     if (await tryLogin(user, req.body.pass) == true) {
-        console.log("asd");
         const query = "SELECT * FROM usuaris WHERE usuari = '" + user + "'"
         let retornar = []
         let resultats = await pool.query(query)
@@ -406,13 +417,197 @@ app.post("/partides/usuaris", async (req, res) => {
     }
 })
 
+app.post("/partides/iniciar", async (req, res) => {
+    if (req.body.partida == undefined) {
+        res.status(400).send("Falten arguments")
+    } else {
+        var sql = `SELECT * FROM \`partides\` WHERE nom = '${req.body.partida}'`
+        var results = await pool.query(sql)
+
+        if (results.length > 1) {
+            res.status(400).send("Partida duplicada")
+            return res.end()
+        }
+
+        if (parseInt(results[0].any) != 0) {
+            res.status(400).send("La partida ja ha començat")
+            return res.end()
+        } 
+
+        var toAdd = []
+        var stuff = JSON.parse(results[0].stuff)
+
+        for (var i = 0; i < stuff.length; i++) {
+            toAdd.push(
+            {
+
+                usuari: stuff[i].usuari,
+                diners: 10000000,
+                costTotal: 0,
+                produccioTotal: 0,
+                costProduccioTotal: 0,
+                costMarketingTotal: 0,
+                costVentesTotal: 0,
+                ventesTotals: 0,
+                ventesMajoristes: [0, 0, 0],
+                ventesMinoristes: 0,
+                posicionamentMajoristes: [0, 0, 0],
+                posicionamentMinoristes: 0,
+                benefici: 0
+            })
+        }
+
+        var final = JSON.parse(results[0].resultats)
+        final.push(toAdd)
+        final = JSON.stringify(final)
+
+        sql = `UPDATE \`partides\` SET resultats = '${final}' WHERE nom = '${req.body.partida}'`
+        await pool.query(sql)
+
+        sql = `UPDATE \`partides\` SET any = '1' WHERE nom = '${req.body.partida}'`
+        await pool.query(sql)
+
+        res.send("La partida acaba de començar!")
+    }
+})
+
+app.post("/partides/join", async (req, res) => {
+    if (req.body.codi == undefined || req.body.usuari == undefined) {
+        res.status(400).send("Falten arguments")
+    } else {
+        var sql = "SELECT * FROM `partides`"
+        var results = await pool.query(sql)
+
+        if (!await verificarUsuari(req.body.usuari)) {
+            res.status(400).send("Aquest usuari no existeix")
+            return res.end()
+        } else {
+            for (var i = 0; i < results.length; i++) {
+                if (results[i].secret_code == req.body.codi) {
+                    var stuff = JSON.parse(results[i].stuff)
+
+                    if (results[i].any != 0) {
+                        res.status(400).send("Actualment la partida no admet jugadors nous")
+                        return res.end()
+                    }
+
+                    for (var x = 0; x < stuff.length; x++) {
+                        if (stuff[x].usuari.toLowerCase() == req.body.usuari.toLowerCase()) {
+                            res.status(400).send("Ja estàs en aquesta partida")
+                            return res.end()
+                        }
+                    }
+                    
+                    stuff.push({
+                        usuari: req.body.usuari,
+                        //per editar, customitzar diners inicials
+                        diners: 10000000,
+                        fabriques: []
+                    })
+
+
+                    var sql = `UPDATE \`partides\` SET stuff = '${JSON.stringify(stuff)}' WHERE nom = '${results[i].nom}'`
+                    await pool.query(sql)
+
+                    sql = `SELECT * FROM usuaris WHERE usuari = '${req.body.usuari.toLowerCase()}'`
+                    var results2 = await pool.query(sql)
+
+
+                    stuff = JSON.parse(results2[0].stuff)
+
+                    //afegir a usuaris
+                    stuff.push({
+                        partida: results[i].nom,
+                        decisions: {}
+                    })
+
+                    sql = `UPDATE \`usuaris\` SET stuff = '${JSON.stringify(stuff)}' WHERE usuari = '${req.body.usuari}'`
+                    await pool.query(sql)
+                    console.log(sql)
+
+                    res.send("Has estat afegit a la partida")
+                    return res.end()
+                    //await pool.query(sql)
+                    
+                }
+            }
+            res.status(400).send("Codi invàlid")
+        }
+    }
+})
+
+app.post("/partides/getUsuaris", async (req, res) => {
+    if (req.body.partida == undefined) {
+        res.status(400).send("Falten arguments")
+    } else {
+        var any = await getPartidaAny(req.body.partida)
+        if (parseInt(any) == 0) {
+            var sql = `SELECT * FROM \`partides\` WHERE nom = '${req.body.partida}'`
+            var results = await pool.query(sql)
+            
+            if (results.length != 1) {
+                res.status(400).send("Partida duplicada o inexistent")
+            }
+
+            var stuff = JSON.parse(results[0].stuff)
+
+            var toReturn = []
+            for (var i = 0; i < stuff.length; i++) {
+                toReturn.push(stuff[i].usuari)
+            }
+            res.send(toReturn)
+        } else {
+            var sql = `SELECT * FROM \`partides\` WHERE nom = '${req.body.partida}'`
+            var results = await pool.query(sql)
+            
+            if (results.length != 1) {
+                res.status(400).send("Partida duplicada o inexistent")
+            }
+
+            var resultats = JSON.parse(results[0].resultats)
+            res.send(resultats)
+        }        
+    }
+})
+
+app.post('/partides/simular', async (req, res) => {
+    if (req.body.partida == undefined) {
+        res.status(400).send("Falten arguments")
+    } else {
+        if (await getPartidaAny(req.body.partida) < 1) {
+            res.status(400).send("La partida encara no ha començat")
+            return res.end()
+        } 
+        res.send(await simular(req.body.partida))
+    }
+})
+
+app.post('/partides/resultats', async (req, res) => {
+    if (req.body.usuari == undefined || req.body.partida == undefined) {
+        res.status(400).send("Falten arguments")
+    } else {
+        var sql = "SELECT * FROM partides WHERE nom "
+    }
+})
 
 
 
 //FUNCIONS TEMPORALS
 
+async function verificarUsuari(usuari) {
+    const sql = "SELECT * FROM usuaris"
+    const results = await pool.query(sql)
+
+    for (var i = 0; i < results.length; i++) {
+        if (results[i].usuari.toLowerCase() == usuari.toLowerCase()) {
+            return true
+        }
+    }
+    return false
+}
+
 async function getPartidaInfo(partida) {
-    const query = "SELECT * FROM partides WHERE nom = '" + partida + "'"
+    const query = `SELECT * FROM partides WHERE nom = '${partida}'`
 
     let resultats = await pool.query(query)
     
@@ -490,10 +685,10 @@ async function getDiners(partida, usuari) {
         return "Partida duplicada o inexistent"
     } 
 
-    var stuff = JSON.parse(results[0].stuff)
-    for (var i = 0; i < stuff.length; i++) {
-        if (stuff[i].usuari.toLowerCase() == usuari.toLowerCase()) {
-            return stuff[i].diners
+    var resultats = JSON.parse(results[0].resultats)
+    for (var i = 0; i < resultats[parseInt(results[0].any) - 1].length; i++) {
+        if (resultats[parseInt(results[0].any) - 1][i].usuari.toLowerCase() == usuari.toLowerCase()) {
+            return resultats[parseInt(results[0].any) - 1][i].diners
         }
     }
     return 'No results'
@@ -584,6 +779,18 @@ async function simular(partida) {
             }
         }
 
+        for (var i = 0; i < usuaris.length; i++) {
+            for (var x = 0; x < whitelist.length; x++) {
+                if (whitelist[x] == "externalitzar-produccio" && users[i].stuff.decisions.externalitzarProduccio == undefined) {
+                    users[i].stuff.decisions.externalitzarProduccio = "false"
+                } else {
+                    if (usuaris[i].stuff.decisions[whitelist[x]] == undefined) {
+                        usuaris[i].stuff.decisions[whitelist[x]] = 0 
+                    }
+                }
+            }
+        }
+
         var dades = {
             //Produccio
             personesQueExternalitzen: 0,
@@ -620,13 +827,14 @@ async function simular(partida) {
 
         dades.percentatgeMinoristes = (Math.random() * 0.35) + 0.3
 
-        dades.percentatgeMinoristes = 0
+        //dades.percentatgeMinoristes = 0
 
         dades.demandaRestantMinoristes = dades.demandaTotal * dades.percentatgeMinoristes
         dades.demandaRestantMajoristes = [(dades.demandaTotal * (1 - dades.percentatgeMinoristes)) / 3, (dades.demandaTotal * (1 - dades.percentatgeMinoristes)) / 3, (dades.demandaTotal * (1 - dades.percentatgeMinoristes)) / 3]
 
         //dades.demandaRestantMajoristes = dades.demandaTotal * (1 - dades.percentatgeMinoristes)
 
+        //console.log(dades.demandaRestantMinoristes)
 
         //calcular mitjanes RRHH
         for (var i = 0; i < usuaris.length; i++) {
@@ -639,8 +847,8 @@ async function simular(partida) {
         }
         
         //RRHH
-        dades.mitjanaSous = dades.totalSous / Math.max(1, dades.personesQueExternalitzen)
-        dades.mitjanaHoresLliures = dades.totalHoresLliures / Math.max(1, dades.personesQueExternalitzen)
+        dades.mitjanaSous = dades.totalSous / Math.max(1, usuaris.length - dades.personesQueExternalitzen)
+        dades.mitjanaHoresLliures = dades.totalHoresLliures / Math.max(1, usuaris.length - dades.personesQueExternalitzen)
 
         var sql1 = "SELECT * FROM `externalitzar-produccio`" 
         var resultsExternalitzarProduccio = await pool.query(sql1)
@@ -711,6 +919,7 @@ async function simular(partida) {
                             var treballadors = parseInt(stuff[x].fabriques[z].treballadors)
 
                             var potenciador = (((parseFloat(usuaris[i].stuff.decisions.horesLliures) / Math.max(dades.mitjanaHoresLliures, 0.0000001)) - 1) / 5) + ((parseInt(usuaris[i].stuff.decisions.salariTreballadors) / Math.max(dades.mitjanaSous, 0.0000001)) - 1) + 1
+                            usuaris[i].potenciador = potenciador
 
                             var horesTotals = 1808 - (226 * parseFloat(usuaris[i].stuff.decisions.horesLliures))
 
@@ -774,7 +983,7 @@ async function simular(partida) {
                 var bonus = 1
                 for (var z = 0; z < usuaris[i].stuff.decisions.preuMajoristes[x].length; z++) {
                     if (z == 2) {
-                        bonus += ((dades.mitjanaPreuMajoristes[x][z] / Math.max(usuaris[i].stuff.decisions.preuMajoristes[x][z], 0.00001)) - 1) * 2
+                        bonus += ((dades.mitjanaPreuMajoristes[x][z] / Math.max(usuaris[i].stuff.decisions.preuMajoristes[x][z], 0.000001)) - 1) * 2
                     } else {
                         bonus += (usuaris[i].stuff.decisions.preuMajoristes[x][z] / Math.max(dades.mitjanaPreuMajoristes[x][z], 0.000001)) - 1
                     }                    
@@ -850,45 +1059,79 @@ async function simular(partida) {
             usuaris[i].dinersVentesTotals += usuaris[i].ventesMinoristes * parseFloat(usuaris[i].stuff.decisions.preuMinoristes)
         }
 
-        //crear dades partides
-        console.log(resultsPartides)
-        for (var i = 0; i < resultsPartides.length; i++) {
-            if (resultsPartides[i].nom.toLowerCase() == partida.toLowerCase()) {
-                var partidaDefinitiva = resultsPartides[i]
-                i += resultsPartides.length
-            }
-        }
-
         //crear fabriques
-        /*
+        var partidesStuff = JSON.parse(resultsPartides[0].stuff)
+        var toAdd = partidesStuff
+
         for (var i = 0; i < usuaris.length; i++) {
             if (usuaris[i].stuff.decisions.comprarFabrica == "true") {
-                for (var x = 0; x < resultsPartides.length; x++) {
-                    if (resultsPartides[x].nom.toLowerCase() == partida.toLowerCase()) {
-                        partidaDefinitiva = JSON.parse(resultsPartides[x].stuff)
-                        for (var z = 0; z < partidaDefinitiva.length; z++) {
-                            if (partidaDefinitiva[z].usuari.toLowerCase() == usuaris[i].usuari.toLowerCase()) {
-                                var toAdd = {nom: usuaris[i].stuff.decisions.quinaFabricaComprar.nom, tier: usuaris[i].stuff.decisions.quinaFabricaComprar.tier, treballadors: 0, id: partidaDefinitiva[z].fabriques.length + 1}
-                                console.log(toAdd);
-                                usuaris[i].stuff.decisions.quinaFabricaComprar.push(partidaDefinitiva[z].fabriques)
-                            }
-
-                            sql = `UPDATE \partides SET \`stuff\` = ''`
+                for (var x = 0; x < partidesStuff.length; x++) {
+                    if (partidesStuff[x].usuari === usuaris[i].usuari) {
+                        var decisions = usuaris[i].stuff.decisions.quinaFabricaComprar
+                        if (decisions.tier < 1 || decisions.tier > 3) {
+                            decisions.tier = 1
                         }
+                        toAdd[x].fabriques.push({nom: decisions.nom, treballadors: 0, tier: decisions.tier, id: toAdd[x].fabriques.length + 1})
+                        usuaris[i].stuff.decisions.comprarFabrica = "false"
                     }
                 }
-                //resultsPartides.
-                //console.log('Usuari ', usuaris[i].usuari, usuaris[i].stuff.decisions.quinaFabricaComprar)
             }
-        }*/
-        
-        //console.log(partidaDefinitiva);
+        }
+        var sql = `UPDATE \`partides\` SET stuff = '${JSON.stringify(toAdd)}' WHERE nom = '${partida}'`
+        await pool.query(sql)
+
+        var resultatsPartidaJugadors = JSON.parse(resultsPartides[0].resultats)
+        var resultatsAAfegir = []
+        var anyPartida = parseInt(resultsPartides[0].any)
+        //aplicar resultats
+        for (var i = 0; i < usuaris.length; i++) {
+            for (var x = 0; x < resultatsPartidaJugadors[anyPartida - 1].length; x++) {
+                //console.log(resultatsPartidaJugadors)
+                if (resultatsPartidaJugadors[anyPartida - 1][x].usuari.toLowerCase() == usuaris[i].usuari.toLowerCase()) {
+                    dinersJugador = resultatsPartidaJugadors[anyPartida - 1][x].diners
+                }
+            }
+            resultatsAAfegir.push({
+                usuari: usuaris[i].usuari,
+                diners: dinersJugador + usuaris[i].benefici,
+                costTotal: usuaris[i].costTotal,
+                produccioTotal: usuaris[i].produccioTotal,
+                costProduccioTotal: usuaris[i].costProduccioTotal,
+                costMarketingTotal: usuaris[i].costMarketingTotal,
+                costVentesTotal: usuaris[i].costVentesTotal,
+                ventesTotals: usuaris[i].ventesTotals,
+                ventesMajoristes: usuaris[i].ventesMajoristes,
+                ventesMinoristes: usuaris[i].ventesMinoristes,
+                posicionamentMajoristes: usuaris[i].posicionamentMajoristes,
+                posicionamentMinoristes: usuaris[i].posicionamentMinoristes,
+                benefici: usuaris[i].benefici
+            })
+        }
+
+        resultatsPartidaJugadors.push(resultatsAAfegir)
+        //console.log(resultatsAAfegir)
+
+
+        //console.log(resultatsPartidaJugadors[anyPartida])
+        //Aplicar definitivament els resultats
+        var sql = `UPDATE \`partides\` SET resultats = '${JSON.stringify(resultatsPartidaJugadors)}' WHERE nom = '${partida}'`
+        await pool.query(sql)
+
+        var sql = `UPDATE \`partides\` SET any = '${JSON.stringify(anyPartida + 1)}' WHERE nom = '${partida}'`
+        await pool.query(sql)
+
+
+        return "S'ha simulat la partida"
+        //afegir definitivament les fàbriques
+
+        //console.log(dades.posicionamentMajoristes)
+        //console.log(usuaris, dades.demandaRestantMinoristes)
     } else {
         console.log("Simular - Falta el paràmatre de 'partida'")
     }
 }
 
-simular('test')
+//simular('test')
 
 /*function buscarUsuarisEnPartida(array, partida) {
     for (var i = 0; i < result.stuff.length; i++) {

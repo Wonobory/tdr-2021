@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+body {
+    font-family: inter;
+}
+
+th, td {
+    padding: 10px;
+}
+
+td, tr {
+    border: 1px solid black;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+.notificacions {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* z-index: -999; */
+}
+
+.notificacio2 {
+    /* background-color: black; */
+    width: 20%;
+    height: 100%;
+    float: right;
+    /* z-index: 99;*/
+    display: flex;
+    flex-direction: column;
+}

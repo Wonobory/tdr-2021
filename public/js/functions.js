@@ -51,10 +51,12 @@ function cargarPartides(user, pass) {
                         partida: response[i].nom
                     } 
 
-                    retornar += "<div class='partida' onclick='location.href = `/decisions/p/" + response[i].nom + "`'>Nom: " + response[i].nom + "<br>Creador: " + response[i].creador + "<br>Informació: " + response[i].info + " <br>Participants: " + response[i].member_count + "</div>"
-                    if (response[i].creador == user) {
+                    retornar += "<div class='partida' onclick='location.href = `/decisions/p/" + response[i].nom + "`'><b>Nom:</b> " + response[i].nom + "<br><b>Creador:</b> " + response[i].creador + "<br><b>Informació:</b> " + response[i].info + " <br><b>Participants:</b> " + response[i].member_count + "</div>"
+                    if (response[i].creador.toLowerCase() == user.toLowerCase()) {
                         retornar += `<button onclick='location.href = "${response[i].nom}/adminpanel/"'>Admin</button>`
                     }
+
+                    
                 }
                 cargar.innerHTML = retornar;
             }
@@ -906,4 +908,137 @@ function notyf(tipus, text) {
     setTimeout(() => {element.remove()}, 5000)
         
     $('.notificacio2')[0].appendChild(element)
+}
+
+function logOff() {
+    localStorage.removeItem("auth")
+    location.href = "/auth/login"
+}
+
+function unirPartida(codi) {
+    console.log(codi)
+    
+    var data = {
+        usuari: JSON.parse(localStorage.auth).user,
+        codi: codi
+    }
+
+    $.ajax({
+        type: "POST",
+        async: true,
+        url: `/partides/join`,
+        data: data,
+        
+        success: function (res) {
+            $('.debugger')[0].innerHTML = res
+        },
+        error: (xhr) => {
+            $('.debugger')[0].innerHTML = xhr.responseText
+        }
+    })
+}
+
+function carregarLlistaJugadors(on) {
+    var data = {
+        partida: partida
+    }
+
+    $.ajax({
+        type: "POST",
+        async: true,
+        url: `/partides/getUsuaris`,
+        data: data,
+        
+        success: function (res) {
+            var toReturn = ""
+            console.log(res)
+            if (parseInt(any) == 0) {
+                toReturn += "<tr><th>Usuari</th><th>Accions</th></tr>"
+                for (var i = 0; i < res.length; i++) {
+                    toReturn += `<tr><td>${res[i]}</td><td><button>Expulsar</button></td></tr>`
+                }
+                on.innerHTML = toReturn
+            } else {
+                toReturn += "<tr><th>Posició</th><th>Usuari</th><th>Diners</th><th>Diferència any anterior</th></tr>"
+
+                //ordenar array
+                
+
+
+                //calcular variació anual
+                for (var i = 0; i < res[parseInt(any)-1].length; i++) {
+                    if (res[parseInt(any)-2] == undefined) {
+                        res[parseInt(any)-1][i].variacio = "-"
+                    } else {
+                        res[parseInt(any)-1][i].variacio = ((((parseFloat(res[parseInt(any)-1][i].diners) / parseFloat(res[parseInt(any)-2][i].diners))-1) * 100).toFixed(2)).toString() + " %"
+                    }
+                }
+
+                res[parseInt(any)-1].sort((a, b) => {
+                    return parseInt(b.diners) - parseInt(a.diners)
+                })
+
+                for (var i = 0; i < res[parseInt(any)-1].length; i++) {
+                    toReturn += `<tr><td>${i + 1}</td><td>${res[parseInt(any)-1][i].usuari}</td><td>${res[parseInt(any)-1][i].diners.toLocaleString()}€</td><td>${res[parseInt(any)-1][i].variacio}</td></tr>`
+                }
+                on.innerHTML = toReturn
+            }
+        },
+        error: (xhr) => {
+            $('.debugger')[0].innerHTML = xhr.responseText
+        }
+    })
+}
+
+function iniciarPartida(partida) {
+
+    $('#buttons button')[0].disabled = true
+
+    var data = {
+        partida: partida
+    }
+
+    $.ajax({
+        type: "POST",
+        async: true,
+        url: `/partides/iniciar`,
+        data: data,
+        
+        success: function (res) {
+            notyf('oke', res)
+            carregarLlistaJugadors(document.getElementById('llista'))
+            
+        },
+        error: (xhr) => {
+            //$('.debugger')[0].innerHTML = xhr.responseText
+            notyf('alert', xhr.responseText)
+            carregarLlistaJugadors(document.getElementById('llista'))
+        }
+    })
+}
+
+function simularPartida(partida) {
+
+    $('#buttons button')[0].disabled = true
+
+    var data = {
+        partida: partida
+    }
+
+    $.ajax({
+        type: "POST",
+        async: true,
+        url: `/partides/simular`,
+        data: data,
+        
+        success: function (res) {
+            notyf('oke', res)
+            carregarLlistaJugadors(document.getElementById('llista'))
+        },
+        error: (xhr) => {
+            //$('.debugger')[0].innerHTML = xhr.responseText
+            notyf('alert', xhr.responseText)
+            carregarLlistaJugadors(document.getElementById('llista'))
+        }
+    })
 }

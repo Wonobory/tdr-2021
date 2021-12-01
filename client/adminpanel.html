@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/adminpanelStyle.css">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/js/autoNumeric.js" type="text/javascript"></script>
+    <script src="/js/functions.js"></script>
+
+    <title>Admin panel</title>
+</head>
+<body>
+    <div class='notificacions'>
+        <div class='notificacio2'>
+
+        </div>
+    </div>
+
+    <h2>Llistat de jugadors</h2>
+
+    <table id="llista" onload="">
+        <tr>
+            <th>Posició</th>
+            <th>Usuari</th>
+            <th>Diners</th>
+            <th>Diferència any anterior</th>
+        </tr>
+    </table>
+
+    <div id="buttons"></div>
+
+    <script>
+        window.onload = () => {
+            carregarLlistaJugadors(document.getElementById('llista'))
+
+            if (any == 0) {
+                toAdd = "<button onclick='iniciarPartida(`" + partida + "`)'>Començar partida</button>"
+                $('#buttons')[0].innerHTML = toAdd
+            } else {
+                toAdd = "<button onclick='simularPartida(`" + partida + "`)'>Simular següent any</button>"
+                $('#buttons')[0].innerHTML = toAdd
+            }
+        }
+    </script>
+</body>
+</html>

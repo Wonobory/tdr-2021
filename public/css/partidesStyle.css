@@ -15,7 +15,7 @@ body {
 .centrar {
     display: flex;
     align-items: center;
-    justify-content: center;
+    flex-direction: column;
     width: 100%;
 }
 
@@ -60,4 +60,24 @@ body {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.input-code{
+    height: 30px;
+    font-weight: 600;
+    font-size: 16px;
+    width: 32ch;
+}
+
+.code-container {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.code-container button {
+    height: 30px;
+    margin-left: 5px;
 }

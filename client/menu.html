@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu</title>
     
-    <link rel="stylesheet" href="/css/menuStyle.css">
+    <link rel='stylesheet' href='/css/menuStyle.css'>
 
     <link rel="icon" type="image/ico" href="/favicon.ico"/>
     
@@ -39,7 +39,10 @@
                     </ul>
                 </div>
                 </li>
-                <li><div><span>Resultats</span></div></li>
+                <li onclick="carregarArxiu('resultats')"><div><span>Resultats</span></div></li>
+            </ul>
+            <ul style="margin-top: 10px;">
+                <li onclick="logOff()" style="border-top: 2px solid black"><div><span>Tancar sessió</span></div></li>
             </ul>
             </nav>
         
@@ -195,6 +198,17 @@
                     moveSelector("113px", "85px")
                     carregarDecisions("financiacio", partida, usuari)
                     revisarInput()
+                }   
+            });
+        } else if (arxiu == "resultats") {
+            $.ajax({
+                type: "GET",
+                async: false,
+                url: `http://localhost:4854/decisions/resultats.html`,
+                
+                success: function (res) {
+                    document.getElementById("result").innerHTML = res
+                    //cargarDecisions(usuari, partida, [document.getElementById('input-sou'), document.getElementById('input-treballadors'), document.getElementById('input-produccio')])
                 }   
             });
         }
