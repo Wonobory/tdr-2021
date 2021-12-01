@@ -21,21 +21,13 @@ const cookie = require("cookie-parser")
 
 const { promisify } = require('util')
 
-/*const pool = mysql.createPool({
-
-    host: "mysql5045.site4now.net",
-    user: "a77f11_rekka",
-    password: "guillem78523",
-    database: "db_a77f11_rekka"
-    
-})*/
 
 const pool = mysql.createPool({
 
-    host: "mysql5045.site4now.net",
-    user: "a7c3e0_rekka",
-    password: "guillem78523",
-    database: "db_a7c3e0_rekka"
+    host: "",
+    user: "",
+    password: "",
+    database: ""
     
 })
 
