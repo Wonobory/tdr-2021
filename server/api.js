@@ -443,6 +443,11 @@ app.post("/partides/iniciar", async (req, res) => {
 
                 usuari: stuff[i].usuari,
                 diners: 10000000,
+
+                dinersVentesMajoristes: 0,
+                dinersVentesMinoristes: 0,
+                dinersVentesTotals: 0,
+
                 costTotal: 0,
                 produccioTotal: 0,
                 costProduccioTotal: 0,
@@ -586,7 +591,28 @@ app.post('/partides/resultats', async (req, res) => {
     if (req.body.usuari == undefined || req.body.partida == undefined) {
         res.status(400).send("Falten arguments")
     } else {
-        var sql = "SELECT * FROM partides WHERE nom "
+        var sql = `SELECT * FROM \`partides\` WHERE nom = '${req.body.partida}'`
+        var results = await pool.query(sql)
+
+        if (results.length != 1) {
+            res.status(400).send("Partida duplicada o inexistent")
+            return res.end()
+        }
+
+
+        results = JSON.parse(results[0].resultats)
+        var toReturn = []
+
+        for (var i = 0; i < results.length; i++) {
+            for (var x = 0; x < results[i].length; x++) {
+                if (req.body.usuari.toLowerCase() == results[i][x].usuari.toLowerCase()) {
+                    toReturn.push(results[i][x])
+                    break
+                }
+            } 
+        }
+
+        res.send(toReturn)
     }
 })
 
@@ -834,8 +860,6 @@ async function simular(partida) {
 
         //dades.demandaRestantMajoristes = dades.demandaTotal * (1 - dades.percentatgeMinoristes)
 
-        //console.log(dades.demandaRestantMinoristes)
-
         //calcular mitjanes RRHH
         for (var i = 0; i < usuaris.length; i++) {
             if (usuaris[i].stuff.decisions.externalitzarProduccio === "true") {
@@ -1054,9 +1078,10 @@ async function simular(partida) {
                 usuaris[i].dinersVentesTotals += usuaris[i].ventesMajoristes[x] * parseFloat(usuaris[i].stuff.decisions.preuMajoristes[i][2]) - (usuaris[i].ventesMajoristes[x] * parseFloat(usuaris[i].stuff.decisions.preuMajoristes[i][0]))
                 usuaris[i].dinersVentesMajoristes += usuaris[i].ventesMajoristes[x] * parseFloat(usuaris[i].stuff.decisions.preuMajoristes[i][2]) - (usuaris[i].ventesMajoristes[x] * parseFloat(usuaris[i].stuff.decisions.preuMajoristes[i][0]))
             }
-            usuaris[i].benefici = usuaris[i].dinersVentesTotals - usuaris[i].costTotal
+            
             usuaris[i].dinersVentesMinoristes += usuaris[i].ventesMinoristes * parseFloat(usuaris[i].stuff.decisions.preuMinoristes)
             usuaris[i].dinersVentesTotals += usuaris[i].ventesMinoristes * parseFloat(usuaris[i].stuff.decisions.preuMinoristes)
+            usuaris[i].benefici = usuaris[i].dinersVentesTotals - usuaris[i].costTotal
         }
 
         //crear fabriques
@@ -1094,6 +1119,11 @@ async function simular(partida) {
             resultatsAAfegir.push({
                 usuari: usuaris[i].usuari,
                 diners: dinersJugador + usuaris[i].benefici,
+
+                dinersVentesMajoristes: usuaris[i].dinersVentesMajoristes,
+                dinersVentesMinoristes: usuaris[i].dinersVentesMinoristes,
+                dinersVentesTotals: usuaris[i].dinersVentesTotals,
+
                 costTotal: usuaris[i].costTotal,
                 produccioTotal: usuaris[i].produccioTotal,
                 costProduccioTotal: usuaris[i].costProduccioTotal,
@@ -1119,7 +1149,6 @@ async function simular(partida) {
 
         var sql = `UPDATE \`partides\` SET any = '${JSON.stringify(anyPartida + 1)}' WHERE nom = '${partida}'`
         await pool.query(sql)
-
 
         return "S'ha simulat la partida"
         //afegir definitivament les fàbriques

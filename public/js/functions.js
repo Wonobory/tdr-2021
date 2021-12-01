@@ -38,7 +38,6 @@ function cargarPartides(user, pass) {
 
         
         success: function (response) {
-            console.log(response)
 
             if (response == []) {
                 cargar.innerHTML = "<div class='partida'>Actualment no et trobes en cap partida</div>"
@@ -916,7 +915,6 @@ function logOff() {
 }
 
 function unirPartida(codi) {
-    console.log(codi)
     
     var data = {
         usuari: JSON.parse(localStorage.auth).user,
@@ -951,7 +949,6 @@ function carregarLlistaJugadors(on) {
         
         success: function (res) {
             var toReturn = ""
-            console.log(res)
             if (parseInt(any) == 0) {
                 toReturn += "<tr><th>Usuari</th><th>Accions</th></tr>"
                 for (var i = 0; i < res.length; i++) {
@@ -1039,6 +1036,83 @@ function simularPartida(partida) {
             //$('.debugger')[0].innerHTML = xhr.responseText
             notyf('alert', xhr.responseText)
             carregarLlistaJugadors(document.getElementById('llista'))
+        }
+    })
+}
+
+function recollirResultats(partida, usuari, any) {
+    var data = {
+        partida: partida,
+        usuari: usuari
+    }
+
+    $.ajax({
+        type: "POST",
+        async: true,
+        url: `/partides/resultats`,
+        data: data,
+        
+        success: function (res) {
+            //res = JSON.parse(res)
+
+
+            any = parseInt(any)
+
+            benefici = document.getElementById('benefici-total-obtingut')
+
+            costTotal = document.getElementById('cost-total')
+            costTotal2 = document.getElementById('cost-total2')
+
+            produccioTotal = document.getElementById('produccio-total')
+            produccioTotal2 = document.getElementById('produccio-total2')
+            
+            costProduccioTotal = document.getElementById('cost-produccio')
+            costMarketingTotal = document.getElementById('cost-marketing')
+            costVentesTotal = document.getElementById('cost-ventes')
+            
+            costPerUnitat = document.getElementById('cost-unitat')
+
+
+            ventesMajoristes = document.getElementById('ventes-majoristes')
+            dinersVentesMajoristes = document.getElementById('diners-ventes-majoristes')
+            posicionamentGransSuperficies = document.getElementById('posicionament-grans-superficies')
+            posicionamentSupermercats = document.getElementById('posicionament-supermercats')
+            posicionamentGasolineres = document.getElementById('posicionament-gasolineres')
+
+            ventesMinoristes = document.getElementById('ventes-minoristes')
+            dinersVentesMinoristes = document.getElementById('diners-ventes-minoristes')
+            posicionamentMinoristes = document.getElementById('posicionament-minoristes')
+
+
+            //aplicar finalment els resultats
+            benefici.innerHTML = parseFloat((res[any-1].benefici.toFixed(2))).toLocaleString()+"€"
+            costTotal.innerHTML = parseFloat((res[any-1].costTotal.toFixed(2))).toLocaleString()+"€"
+            costTotal2.innerHTML = parseFloat((res[any-1].costTotal.toFixed(2))).toLocaleString()+"€"
+            produccioTotal.innerHTML = res[any-1].produccioTotal.toLocaleString() + " u"
+            produccioTotal2.innerHTML = res[any-1].produccioTotal.toLocaleString() + " u"
+
+            costProduccioTotal.innerHTML = parseFloat((res[any-1].costProduccioTotal.toFixed(2))).toLocaleString()+"€"
+            costMarketingTotal.innerHTML = parseFloat((res[any-1].costMarketingTotal.toFixed(2))).toLocaleString()+"€"
+            costVentesTotal.innerHTML = parseFloat((res[any-1].costVentesTotal.toFixed(2))).toLocaleString()+"€"
+
+            costPerUnitat.innerHTML = parseFloat(res[any-1].costTotal) / parseFloat(res[any-1].produccioTotal).toFixed(2) + "€ / u"
+
+            ventesMajoristesTotals = res[any-1].ventesMajoristes[0] + res[any-1].ventesMajoristes[1] + res[any-1].ventesMajoristes[2]
+
+            dinersVentesMajoristes.innerHTML = parseFloat(res[any-1].dinersVentesMajoristes.toFixed(0)).toLocaleString() + "€"
+            dinersVentesMinoristes.innerHTML = parseFloat(res[any-1].dinersVentesMinoristes.toFixed(0)).toLocaleString() + "€"
+
+            ventesMajoristes.innerHTML = parseFloat(ventesMajoristesTotals.toFixed(0)).toLocaleString() + " u"
+            posicionamentGransSuperficies.innerHTML = parseFloat((res[any-1].posicionamentMajoristes[0].toFixed(2))).toLocaleString()+" pts"
+            posicionamentSupermercats.innerHTML = parseFloat((res[any-1].posicionamentMajoristes[1].toFixed(2))).toLocaleString()+" pts"
+            posicionamentGasolineres.innerHTML = parseFloat((res[any-1].posicionamentMajoristes[2].toFixed(2))).toLocaleString()+" pts"
+
+            ventesMinoristes.innerHTML = parseFloat((res[any-1].ventesMinoristes.toFixed(0))).toLocaleString()+" u"
+            posicionamentMinoristes.innerHTML = parseFloat(res[any-1].posicionamentMinoristes.toFixed(0)).toLocaleString() + " pts"
+        },
+        error: (xhr) => {
+            //$('.debugger')[0].innerHTML = xhr.responseText
+            notyf('alert', xhr.responseText)
         }
     })
 }
