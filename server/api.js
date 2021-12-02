@@ -21,15 +21,6 @@ const cookie = require("cookie-parser")
 
 const { promisify } = require('util')
 
-/*const pool = mysql.createPool({
-
-    host: "mysql5045.site4now.net",
-    user: "a77f11_rekka",
-    password: "guillem78523",
-    database: "db_a77f11_rekka"
-    
-})*/
-
 const pool = mysql.createPool({
 
     host: "mysql5045.site4now.net",
@@ -476,6 +467,37 @@ app.post("/partides/iniciar", async (req, res) => {
     }
 })
 
+app.post("/partides/posicio", async (req, res) => {
+    if (req.body.partida == undefined || req.body.usuari == undefined) {
+        res.status(400).send("Falten arguments")
+    } else {
+        const sql = `SELECT * FROM \`partides\` WHERE nom = '${req.body.partida}'`
+        let results = await pool.query(sql)
+
+        if (results.length != 1) {
+            res.status(400).send("Partida duplicada o inexistent")
+            return res.end()
+        }
+
+        const any = parseInt(results[0].any)
+
+        resultatsJugadors = JSON.parse(results[0].resultats)
+        resultatsJugadors[any-1].sort((a, b) => {
+            return b.diners - a.diners
+        })
+
+        for (var i = 0; i < resultatsJugadors[any-1].length; i++) {
+            if (resultatsJugadors[any-1][i].usuari.toLowerCase() == req.body.usuari.toLowerCase()) {
+                res.send((i+1).toString())
+                return res.end()
+                break
+            }
+        }
+
+        res.status(400).send("Aquest usuari no es troba en aquesta partida")
+    }
+})
+
 app.post("/partides/join", async (req, res) => {
     if (req.body.codi == undefined || req.body.usuari == undefined) {
         res.status(400).send("Falten arguments")
@@ -793,6 +815,16 @@ async function simular(partida) {
 
         var usuaris = []
 
+        var sql1 = "SELECT * FROM `externalitzar-produccio`" 
+        var resultsExternalitzarProduccio = await pool.query(sql1)
+
+        var sql2 = `SELECT * FROM \`partides\` WHERE nom='${partida}'`
+        var resultsPartides = await pool.query(sql2)
+
+        var sql3 = `SELECT * FROM \`marketing\` ORDER BY 'id'`
+        var resultsMarketing = await pool.query(sql3)
+
+
         //get all users
         for (var i = 0; i < results.length; i++) {
             var stuff = JSON.parse(results[i].stuff)
@@ -805,15 +837,79 @@ async function simular(partida) {
             }
         }
 
+
+        //Verificar dades decisions
         for (var i = 0; i < usuaris.length; i++) {
-            for (var x = 0; x < whitelist.length; x++) {
-                if (whitelist[x] == "externalitzar-produccio" && users[i].stuff.decisions.externalitzarProduccio == undefined) {
-                    users[i].stuff.decisions.externalitzarProduccio = "false"
-                } else {
-                    if (usuaris[i].stuff.decisions[whitelist[x]] == undefined) {
-                        usuaris[i].stuff.decisions[whitelist[x]] = 0 
+            if (usuaris[i].stuff.decisions.externalitzarProduccio != "false" && usuaris[i].stuff.decisions.externalitzarProduccio != "true") {
+                usuaris[i].stuff.decisions.externalitzarProduccio = "false"
+            }
+
+            if (usuaris[i].stuff.decisions.queComprar == undefined) {
+                toAdd = []
+                for (var x = 0; x < resultsExternalitzarProduccio.length; x++) {
+                    toAdd.push([resultsExternalitzarProduccio[i].id, "0"])
+                }
+                usuaris[i].stuff.decisions.queComprar = toAdd
+            }
+
+            if (usuaris[i].stuff.decisions.salariTreballadors == undefined || parseInt(usuaris[i].stuff.decisions.salariTreballadors) > 27000 || parseInt(usuaris[i].stuff.decisions.salariTreballadors) < 17000) {
+                usuaris[i].stuff.decisions.salariTreballadors = "17000"
+            }
+
+            if (usuaris[i].stuff.decisions.horesLliures == undefined || parseFloat(usuaris[i].stuff.decisions.horesLliures) > 2 || parseFloat(usuaris[i].stuff.decisions.horesLliures) < 0) {
+                usuaris[i].stuff.decisions.horesLliures = "0"
+            }
+
+            if (usuaris[i].stuff.decisions.percentatgeMinoristes == undefined || parseFloat(usuaris[i].stuff.decisions.percentatgeMinoristes) > 100 || parseFloat(usuaris[i].stuff.decisions.percentatgeMinoristes) < 0) {
+                usuaris[i].stuff.decisions.percentatgeMinoristes = "0"
+            }
+
+            if (usuaris[i].stuff.decisions.preuMinoristes == undefined || parseFloat(usuaris[i].stuff.decisions.preuMinoristes) > 3 || parseFloat(usuaris[i].stuff.decisions.preuMinoristes) < 0.01) {
+                usuaris[i].stuff.decisions.preuMinoristes = "3"
+            }
+
+            if (usuaris[i].stuff.decisions.preuMajoristes == undefined) {
+                usuaris[i].stuff.decisions.preuMajoristes = [["0","0","3"],["0","0","3"],["0","0","3"]]
+            }
+
+            if (typeof usuaris[i].stuff.decisions.preuMajoristes == "object") {
+                for (var x = 0; x < usuaris[i].preuMajoristes; x++) {
+                    if (parseFloat(usuaris[i].stuff.decisions.preuMajoristes[x][0]) > 0.50 || parseFloat(usuaris[i].stuff.decisions.preuMajoristes[x][0]) < 0) {
+                        usuaris[i].stuff.decisions.preuMajoristes[x][0] = 0
+                    }
+                    if (parseFloat(usuaris[i].stuff.decisions.preuMajoristes[x][1]) > 10000000 || parseFloat(usuaris[i].stuff.decisions.preuMajoristes[x][1]) < 0) {
+                        usuaris[i].stuff.decisions.preuMajoristes[x][1] = 0
+                    }
+                    if (parseFloat(usuaris[i].stuff.decisions.preuMajoristes[x][2]) > 3 || parseFloat(usuaris[i].stuff.decisions.preuMajoristes[x][2]) < 0.01) {
+                        usuaris[i].stuff.decisions.preuMajoristes[x][2] = 0.01
+                    }                    
+                }
+            }
+            
+            if (usuaris[i].stuff.decisions.publicitat == undefined) {
+                toAdd = []
+                for (var x = 0; x < resultsMarketing.length; x++) {
+                    toAdd.push("0")
+                }
+                usuaris[i].stuff.decisions.publicitat = toAdd
+            }
+
+            if (typeof usuaris[i].stuff.decisions.publicitat == "object") {
+                for (var x = 0; x < resultsMarketing.length; x++) {
+                    if (usuaris[i].stuff.decisions.publicitat.length != resultsMarketing.length) {
+                        for (var x = 0; x < resultsMarketing.length; x++) {
+                            toAdd.push("0")
+                        }
+                    } else {
+                        if (parseFloat(usuaris[i].stuff.decisions.publicitat[x]) > 1000 || parseFloat(usuaris[i].stuff.decisions.publicitat[x] < 0)) {
+                            usuaris[i].stuff.decisions.publicitat[x] = "0"
+                        }
                     }
                 }
+            }
+            
+            if (usuaris[i].stuff.decisions.quinaFabricaComprar == undefined || parseFloat(usuaris[i].stuff.decisions.quinaFabricaComprar.tier) > 3 || parseFloat(usuaris[i].stuff.decisions.quinaFabricaComprar.tier) < 1) {
+                usuaris[i].stuff.decisions.quinaFabricaComprar = {nom: "default name", tier: "1"}
             }
         }
 
@@ -843,11 +939,13 @@ async function simular(partida) {
 
 
             //DEMANDA
-            demandaTotal: (Math.floor(Math.random() * 40000000) + 30000000) + (usuaris.length * (10000000 * parseInt(await getPartidaAny(partida)))),
+            demandaTotal: (Math.floor(Math.random() * 40000000) + 40000000) + (usuaris.length * (6000000 * parseInt(await getPartidaAny(partida)))),
             percentatgeMinoristes: (Math.random() * 0.35) + 0.3,
             demandaRestantMinoristes: 0,
             demandaRestantMajoristes: 0
         }
+
+        console.log(dades.demandaTotal)
 
         //dades.demandaTotal = 30000
 
@@ -874,14 +972,7 @@ async function simular(partida) {
         dades.mitjanaSous = dades.totalSous / Math.max(1, usuaris.length - dades.personesQueExternalitzen)
         dades.mitjanaHoresLliures = dades.totalHoresLliures / Math.max(1, usuaris.length - dades.personesQueExternalitzen)
 
-        var sql1 = "SELECT * FROM `externalitzar-produccio`" 
-        var resultsExternalitzarProduccio = await pool.query(sql1)
-
-        var sql2 = `SELECT * FROM \`partides\` WHERE nom='${partida}'`
-        var resultsPartides = await pool.query(sql2)
-
-        var sql3 = `SELECT * FROM \`marketing\` ORDER BY 'id'`
-        var resultsMarketing = await pool.query(sql3)
+        
 
         //calcular costos i produccio
         for (var i = 0; i < usuaris.length; i++) {
@@ -1079,8 +1170,8 @@ async function simular(partida) {
                 usuaris[i].dinersVentesMajoristes += usuaris[i].ventesMajoristes[x] * parseFloat(usuaris[i].stuff.decisions.preuMajoristes[i][2]) - (usuaris[i].ventesMajoristes[x] * parseFloat(usuaris[i].stuff.decisions.preuMajoristes[i][0]))
             }
             
-            usuaris[i].dinersVentesMinoristes += usuaris[i].ventesMinoristes * parseFloat(usuaris[i].stuff.decisions.preuMinoristes)
-            usuaris[i].dinersVentesTotals += usuaris[i].ventesMinoristes * parseFloat(usuaris[i].stuff.decisions.preuMinoristes)
+            usuaris[i].dinersVentesMinoristes += usuaris[i].ventesMinoristes * (parseFloat(usuaris[i].stuff.decisions.preuMinoristes)-0.2)
+            usuaris[i].dinersVentesTotals += usuaris[i].ventesMinoristes * (parseFloat(usuaris[i].stuff.decisions.preuMinoristes)-0.2)
             usuaris[i].benefici = usuaris[i].dinersVentesTotals - usuaris[i].costTotal
         }
 

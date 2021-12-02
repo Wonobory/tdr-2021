@@ -53,7 +53,7 @@
             <div class="resultats">
                 <div>
                     <label>Posició:</label>
-                    <span>1º</span>
+                    <span id="posicio-jugador">Carregant...</span>
                 </div>
                 
                 <div>
@@ -62,14 +62,14 @@
                 </div>
 
                 <div>
-                    <label>Costos previstos:</label>
-                    <span>32.024.023€</span>
+                    <label>Benefici obtingut:</label>
+                    <span id="benefici">Carregant...</span>
                 </div>
 
                 <div>
-                    <label>Produccio prevista:</label>
-                    <span>80.000.000 u</span>
-                </div>              
+                    <label>Any de la simulació:</label>
+                    <span id="any-simulacio">Carregant...</span>
+                </div>
             </div>
 
             <div class="centrador">
@@ -109,6 +109,12 @@
 -->
 
 <script>
+    window.onload = () => {
+        mostrarBeneficis(partida, usuari)
+        getPosicio(partida, usuari)
+        document.getElementById('any-simulacio').innerHTML = any + crearSufix(any) + " any"
+    }
+
     function alternar() {
         if (decisions.style.display == "none") {
             $("#decisions").slideDown(200)

@@ -1,6 +1,6 @@
 <h3>Adquirir fàbrica</h3>
 
-<p>Selecciona la fàbrica que vulguis comprar, recorda que anualment es cobrarà entre un 2% i un 3% del preu total com a costos de manteniment. Recorda que es necessita aconseguir omplir com a mínim el 70% de la plantilla màxima de treballadors, d'altre manera no s'assoliría la seva màxima producció</p>
+<p>Selecciona la fàbrica que vulguis comprar, tingues en compte que anualment es cobrarà entre un 2% i un 3% del preu total com a costos de manteniment. Per tal d'assolir la producció màxima es necessita aconseguir omplir com a mínim el 70% de la plantilla màxima de treballadors</p>
 
 <div style="display: flex; flex-direction: row; align-items:center;">
     <h4>Nom de la fàbrica:</h4>
@@ -20,7 +20,7 @@
             <span>Max: 50 treballadors</span>
             <span>Producció: 170u/h * treballadors</span>
         
-            <span style="margin-top: 10px;">250.000€</span>
+            <span style="margin-top: 10px;"><b>250.000€</b></span>
         </div>
     </div>
 
@@ -37,7 +37,7 @@
             <span>Producció: 210u/h * treballadors</span>
 
         
-            <span style="margin-top: 10px;">500.000€</span>
+            <span style="margin-top: 10px;"><b>500.000€</b></span>
         </div>
     </div>
 
@@ -53,13 +53,13 @@
             <span>Max: 120 treballadors</span>
             <span>Producció: 250u/h * treballadors</span>
         
-            <span style="margin-top: 10px;">750.000€</span>
+            <span style="margin-top: 10px;"><b>750.000€</b></span>
         </div>
     </div>
 </div>
 <div style="display: flex;flex-direction: row;margin-top: 10px;">
-    <div>
-        <button onclick="guardarDecisions('cancelar-comprar-fabrica', partida, usuari)" style="float: right;">Cancelar</button>
-        <button onclick="guardarDecisions('comprar-fabrica', partida, usuari)" style="float: right;">Comprar</button>
+    <div style="width: 100%;">
+        <button class="primary" onclick="guardarDecisions('comprar-fabrica', partida, usuari)" style="float: right;">Comprar</button>
+        <button style="margin-right: 15px; float: right" onclick="guardarDecisions('cancelar-comprar-fabrica', partida, usuari)" style="float: right;">Cancelar</button>
     </div>    
 </div>

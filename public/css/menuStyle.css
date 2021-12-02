@@ -6,6 +6,25 @@
     display: none;
 }
 
+.tipus-fabrica {
+    margin: 5px;
+}
+
+button {
+    height: 36px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.primary {
+    background-color: #84dd84;
+    border: 2px solid #74bf74;
+}
+
+th, td {
+    height: 42px;
+}
+
 :focus {
     outline: none;
 }
@@ -95,7 +114,7 @@ td {
 }*/
 
 h3 {
-    font-family: inter;
+    font-family: inter, sans-serif;
     font-weight: 700;
     margin-top: 30px;
 }
@@ -136,7 +155,7 @@ body {
     flex-direction: row;
     justify-content: center;
 
-    font-family: inter;
+    font-family: inter, sans-serif;
 }
 
 .contenidor-menu {

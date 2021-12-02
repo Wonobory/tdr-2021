@@ -147,10 +147,21 @@ function verificarComprarFabrica(partida, usuari) {
 
             if (res.comprarFabrica === "true") {
                 var element = document.createElement('span')
-                element.innerHTML = 'Comprar: 1 x Fabrica tier ' + res.quinaFabricaComprar.tier.toString()
+                var tamany = ""
+
+                if (res.quinaFabricaComprar.tier == 1) {
+                    tamany = "petita"
+                } else if (res.quinaFabricaComprar.tier == 2) {
+                    tamany = "mitjana"
+                } else {
+                    tamany = "gran"
+                }
+
+                element.innerHTML = 'Es comprarà una <b>fàbrica ' + tamany + '</b>, que estarà disponible al inici del proper any'
                 $('#fabriques-display')[0].appendChild(element)
 
                 var element2 = document.createElement("button")
+                element2.style.marginLeft = "8px"
                 element2.innerHTML = "Cancelar"
                 element2.onclick = function () { guardarDecisions('cancelar-comprar-fabrica', partida, usuari) }
                 $('#fabriques-display')[0].appendChild(element2)
@@ -1040,6 +1051,64 @@ function simularPartida(partida) {
     })
 }
 
+function crearSufix(numero) {
+    if (numero == "1" || numero == "3") {
+        return "r"
+    } else if (numero == "2") {
+        return "n"
+    } else if (numero == "4") {
+        return "rt"
+    } else {
+        return "è"
+    }
+}
+
+function getPosicio(partida, usuari) {
+    var send = {
+        partida: partida,
+        usuari: usuari
+    }
+    
+    $.ajax({
+        type: "POST",
+        async: true,
+        url: `/partides/posicio`,
+        data: send,
+        
+        success: function (res) {
+            sufix = crearSufix(res)
+            document.getElementById('posicio-jugador').innerHTML = res + sufix
+        },
+
+        error: (xhr) => {
+            notyf("alert", xhr.responseText)
+        }
+    });
+}
+
+function mostrarBeneficis(partida, usuari) {
+    var send = {
+        partida: partida,
+        usuari: usuari
+    }
+    
+    $.ajax({
+        type: "POST",
+        async: true,
+        url: `/partides/resultats`,
+        data: send,
+        
+        success: function (res) {
+            console.log(res)
+            document.getElementById('benefici').innerHTML = parseFloat(res[parseInt(any)-1].benefici.toFixed(2)).toLocaleString() + "€"
+        },
+
+        error: (xhr) => {
+            notyf("alert", xhr.responseText)
+        }
+    });
+}
+
 function recollirResultats(partida, usuari, any) {
     var data = {
         partida: partida,
@@ -1055,9 +1124,9 @@ function recollirResultats(partida, usuari, any) {
         success: function (res) {
             //res = JSON.parse(res)
 
-
             any = parseInt(any)
 
+            diners = document.getElementById('diners-resum')
             benefici = document.getElementById('benefici-total-obtingut')
 
             costTotal = document.getElementById('cost-total')
@@ -1085,6 +1154,8 @@ function recollirResultats(partida, usuari, any) {
 
 
             //aplicar finalment els resultats
+            diners.innerHTML = parseFloat((res[any-1].diners.toFixed(2))).toLocaleString()+"€"
+
             benefici.innerHTML = parseFloat((res[any-1].benefici.toFixed(2))).toLocaleString()+"€"
             costTotal.innerHTML = parseFloat((res[any-1].costTotal.toFixed(2))).toLocaleString()+"€"
             costTotal2.innerHTML = parseFloat((res[any-1].costTotal.toFixed(2))).toLocaleString()+"€"
@@ -1095,7 +1166,7 @@ function recollirResultats(partida, usuari, any) {
             costMarketingTotal.innerHTML = parseFloat((res[any-1].costMarketingTotal.toFixed(2))).toLocaleString()+"€"
             costVentesTotal.innerHTML = parseFloat((res[any-1].costVentesTotal.toFixed(2))).toLocaleString()+"€"
 
-            costPerUnitat.innerHTML = parseFloat(res[any-1].costTotal) / parseFloat(res[any-1].produccioTotal).toFixed(2) + "€ / u"
+            costPerUnitat.innerHTML = (parseFloat(res[any-1].costTotal) / parseFloat(res[any-1].produccioTotal)).toFixed(3) + "€ / u"
 
             ventesMajoristesTotals = res[any-1].ventesMajoristes[0] + res[any-1].ventesMajoristes[1] + res[any-1].ventesMajoristes[2]
 
