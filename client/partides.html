@@ -10,6 +10,12 @@
     <script src="/js/functions.js"></script>
 </head>
 <body>
+    <div class='notificacions'>
+        <div class='notificacio2'>
+
+        </div>
+    </div>
+
     <h1>Partides en curs</h1>
     <div class="centrar">
         
@@ -19,7 +25,7 @@
             </div>    
 
         </div>
-        <div class="code-container"><input maxlength="32" class="input-code" type="text"><button onclick="unirPartida($('.input-code')[0].value)">Unir-me</button></div>
+        <div class="code-container"><input maxlength="10" class="input-code" type="text"><button class="primary" onclick="unirPartida($('.input-code')[0].value)">Unir-me</button></div>
         <div class="debugger"></div>
     </div>
 </body>

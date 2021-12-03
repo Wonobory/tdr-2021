@@ -7,6 +7,38 @@ html {
     height: 100%;
 }
 
+button {
+    height: 36px;
+    border-radius: 4px;
+    font-size: 14px;
+    border: 2px solid #cdcdcd;
+}
+
+.primary {
+    background-color: #84dd84;
+    border: 2px solid #74bf74;
+}
+
+.notificacions {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* z-index: -999; */
+}
+
+.notificacio2 {
+    /* background-color: black; */
+    width: 20%;
+    height: 100%;
+    float: right;
+    /* z-index: 99;*/
+    display: flex;
+    flex-direction: column;
+}
+
 body {
     width: 100%;
     height: 100%;
@@ -20,21 +52,23 @@ body {
 
 .centrar {
     display: flex;
-    align-items: center;
+    /* align-items: center; */
     flex-direction: column;
     width: 100%;
+    max-width: 500px;
 }
 
 .contenidor-partides {
-    width: 40%;
+    width: 100%;
 }
 
 .partida {
     border: solid 1px black;
     width: 100%;
     padding: 10px;
-    margin-top: 5px;
+    margin-top: 20px;
     cursor: pointer;
+    margin-bottom: 5px;
 }
 
 .partida:hover {
@@ -72,18 +106,17 @@ body {
     height: 30px;
     font-weight: 600;
     font-size: 16px;
-    width: 32ch;
+    width: 11ch;
 }
 
 .code-container {
     display: flex;
     flex-direction: row;
-    margin-top: 10px;
-    justify-content: center;
+    margin-top: 30px;
+    /* justify-content: center; */
     align-items: center;
 }
 
 .code-container button {
-    height: 30px;
     margin-left: 5px;
 }

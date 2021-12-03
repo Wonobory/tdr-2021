@@ -1,9 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&family=Lato:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@700&family=Lato:wght@700&display=swap');
+
+body {
+    font-family: inter, sans-serif;
+    font-size: 14px;
+}
+
 .centrador {
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+button {
+    border-radius: 4px;
+    font-size: 14px;
+    width: 70px;
+    border: 2px solid #cdcdcd;
+}
+
+.primary {
+    background-color: #84dd84;
+    border: 2px solid #74bf74;
 }
 
 :focus {
@@ -18,7 +39,7 @@ html, body {
 .inputs, .noms {
     display: flex;
     flex-direction: column;
-    margin-right: 10px;
+    margin-right: 20px;
 }
 
 .ordenar {

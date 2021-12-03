@@ -265,6 +265,7 @@ function carregarProduccioInterna(on) {
             //document.getElementById("carregar").innerHTML = res
             on.innerHTML = res
             carregarFabriquesEnPropietat(document.getElementById("carregar-fabriques-en-propietat"), partida, usuari)
+            carregarDecisions("produccio", partida, usuari)
         }
     });
 }
@@ -745,14 +746,12 @@ function guardarDecisions(elQue, partida, usuari) {
         decisions.comprarFabrica = false
         carregarDecisions('produccio', partida, usuari)
     } else if (elQue == "comprar-fabrica") {
-        var altoke = false
         if ($('#nom-fabrica')[0].value == undefined || $('#nom-fabrica')[0].value == "") {
             notyf("alert", "Falta omplir el nom de la fàbrica")
         } else {
             decisions.comprarFabrica = true
             decisions.quinaFabricaComprar = {nom: $('#nom-fabrica')[0].value, tier: $('input[name=selectorFabrica]:checked')[0].value}
-            carregarDecisions('produccio', partida, usuari)
-            altoke = true
+            setTimeout(() => {carregarDecisions('produccio', partida, usuari)}, 100)
         }
     }
 
@@ -939,10 +938,10 @@ function unirPartida(codi) {
         data: data,
         
         success: function (res) {
-            $('.debugger')[0].innerHTML = res
+            notyf('oke', res)
         },
         error: (xhr) => {
-            $('.debugger')[0].innerHTML = xhr.responseText
+            notyf('alert', xhr.responseText)
         }
     })
 }

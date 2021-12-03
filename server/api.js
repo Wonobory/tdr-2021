@@ -550,7 +550,6 @@ app.post("/partides/join", async (req, res) => {
 
                     sql = `UPDATE \`usuaris\` SET stuff = '${JSON.stringify(stuff)}' WHERE usuari = '${req.body.usuari}'`
                     await pool.query(sql)
-                    console.log(sql)
 
                     res.send("Has estat afegit a la partida")
                     return res.end()
@@ -687,21 +686,12 @@ async function getPartidaInfo(partida) {
 }
 
 async function getNombreParticipants(partida) {
-    const query = "SELECT * FROM usuaris"
-    let count = 0;
-    resultats = await pool.query(query)
+    const query = `SELECT * FROM \`partides\` WHERE nom = '${partida}'` 
+    let resultats = await pool.query(query)
 
-    for (var i = 0; i < resultats.length; i++) {
-        let resultat = JSON.parse(resultats[i].stuff)
-        for (var x = 0; x < resultat.length; x++) {
-            if (resultat[x].partida == partida) {
-                count++
-                break
-            }
-        }
-    }
+    resultats = JSON.parse(resultats[0].stuff)
     
-    return count.toString()
+    return resultats.length.toString()
 }
 
 function buscarGentEnPartida(nomPartida, total, array) {
@@ -960,7 +950,6 @@ async function simular(partida) {
             demandaRestantMajoristes: 0
         }
 
-        console.log(dades.demandaTotal)
 
         //dades.demandaTotal = 30000
 
