@@ -25,7 +25,7 @@ const pool = mysql.createPool({
 
     host: "mysql5045.site4now.net",
     user: "a7c3e0_rekka",
-    password: "guillem78523",
+    password: "test1234567890",
     database: "db_a7c3e0_rekka"
     
 })
