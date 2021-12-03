@@ -19,28 +19,41 @@
         </div>
     </div>
 
-    <h2>Llistat de jugadors</h2>
+    <div class="content">
+        <div class="taula">
+            <h2>Llistat de jugadors</h2>
 
-    <table id="llista" onload="">
-        <tr>
-            <th>Posició</th>
-            <th>Usuari</th>
-            <th>Diners</th>
-            <th>Diferència any anterior</th>
-        </tr>
-    </table>
+            <table id="llista" onload="">
+                <tr>
+                    <th>Posició</th>
+                    <th>Usuari</th>
+                    <th>Diners</th>
+                    <th>Diferència any anterior</th>
+                </tr>
+            </table>
 
-    <div id="buttons"></div>
+            <div id="buttons"></div>
+        </div>
+        
+        <div class="invitacio">
+            <h3>Codi d'invitació</h3>
+            <h4 id="codi-invitacio">Carregant...</h4>
+        </div>
+    </div>
+    
+
+    
 
     <script>
         window.onload = () => {
             carregarLlistaJugadors(document.getElementById('llista'))
+            carregarCodiInvitacio(partida)
 
             if (any == 0) {
-                toAdd = "<button onclick='iniciarPartida(`" + partida + "`)'>Començar partida</button>"
+                toAdd = "<button class='primary'onclick='iniciarPartida(`" + partida + "`)'>Començar partida</button>"
                 $('#buttons')[0].innerHTML = toAdd
             } else {
-                toAdd = "<button onclick='simularPartida(`" + partida + "`)'>Simular següent any</button>"
+                toAdd = "<button class='primary' onclick='simularPartida(`" + partida + "`)'>Simular següent any</button>"
                 $('#buttons')[0].innerHTML = toAdd
             }
         }

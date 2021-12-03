@@ -1014,13 +1014,13 @@ function iniciarPartida(partida) {
         
         success: function (res) {
             notyf('oke', res)
-            carregarLlistaJugadors(document.getElementById('llista'))
+            setTimeout(() => {window.location.reload()}, 1500)
             
         },
         error: (xhr) => {
             //$('.debugger')[0].innerHTML = xhr.responseText
             notyf('alert', xhr.responseText)
-            carregarLlistaJugadors(document.getElementById('llista'))
+            setTimeout(() => {window.location.reload()}, 1500)
         }
     })
 }
@@ -1041,12 +1041,12 @@ function simularPartida(partida) {
         
         success: function (res) {
             notyf('oke', res)
-            carregarLlistaJugadors(document.getElementById('llista'))
+            setTimeout(() => {window.location.reload()}, 1500)
         },
         error: (xhr) => {
             //$('.debugger')[0].innerHTML = xhr.responseText
             notyf('alert', xhr.responseText)
-            carregarLlistaJugadors(document.getElementById('llista'))
+            setTimeout(() => {window.location.reload()}, 1500)
         }
     })
 }
@@ -1186,4 +1186,25 @@ function recollirResultats(partida, usuari, any) {
             notyf('alert', xhr.responseText)
         }
     })
+}
+
+function carregarCodiInvitacio(partida) {
+    var send = {
+        partida: partida
+    }
+    
+    $.ajax({
+        type: "POST",
+        async: true,
+        url: `/partides/codi`,
+        data: send,
+        
+        success: function (res) {
+            document.getElementById('codi-invitacio').innerHTML = res
+        },
+
+        error: (xhr) => {
+            notyf("alert", xhr.responseText)
+        }
+    });
 }

@@ -35,3 +35,37 @@ table {
     display: flex;
     flex-direction: column;
 }
+
+#buttons {
+    margin-top: 10px;
+}
+
+button {
+    height: 36px;
+    border-radius: 4px;
+    font-size: 14px;
+    border: 2px solid #cdcdcd;
+}
+
+.primary {
+    background-color: #84dd84;
+    border: 2px solid #74bf74;
+}
+
+#codi-invitacio {
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 8px;
+    width: fit-content;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 30px;
+}
+
+.invitacio {
+    margin-top: 50px;
+}

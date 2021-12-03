@@ -638,6 +638,21 @@ app.post('/partides/resultats', async (req, res) => {
     }
 })
 
+app.post('/partides/codi', async (req, res) => {
+    if (req.body.partida == undefined) {
+        res.status(400).send("Falten arguments")
+    } else {
+        const sql = `SELECT * FROM \`partides\` WHERE nom = '${req.body.partida}'`
+        let results = await pool.query(sql)
+
+        if (results.length != 1) {
+            res.status(400).send("Partida duplicada o inexistent")
+            return res.end()
+        }
+
+        res.send(results[0].secret_code)
+    }
+})
 
 
 //FUNCIONS TEMPORALS
